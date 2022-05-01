@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct Student
+{
+    char name[10];
+    int Id;
+    int score;
+	int age;
+	int height;
+	int weight;
+};
+struct Node 
+{
+    struct Student data;
+    struct Node *next;
+};
+struct Node *CreateList() 
+{
+    struct Node *HeadNode = (struct Node *)malloc(sizeof(struct Node)); 
+    HeadNode->next = NULL;
+    return HeadNode; 
+}
+struct Node *CreateNode(struct Student data) 
+{
+    struct Node *NewNode = (struct Node *)malloc(sizeof(struct Node));
+    NewNode->data = data;                 
+    NewNode->next = NULL;
+    return NewNode;
+}
+void insertNodeByHead(struct Node *HeadNode, struct Student data) 
+{
+    struct Node *NewNode = CreateNode(data); 
+    NewNode->next = HeadNode->next;
+    HeadNode->next = NewNode;
+}
+void DeleteNodeByData(struct Node *HeadNode, int Id)
+{
+    struct Node *posNode = HeadNode->next;
+    struct Node *posNodeFront = HeadNode; 
+    if (posNode == NULL) 
+    {
+        printf("链表为空。");
+    }
+    else
+    {
+        while (posNode->data.Id != Id) 
+        {
+            posNodeFront = posNode;
+            posNode = posNodeFront->next;
+            if (posNode == NULL)   
+            {
+                printf("未找到指定数据。");
+            }
+        }
+        posNodeFront->next = posNode->next; 
+        free(posNode);
+    }
+}
+void printList(struct Node *HeadNode)
+{
+    struct Node *pMove = HeadNode->next;
+    printf("学号\t姓名\t成绩\t年龄\t身高\t体重\t\n");
+    while (pMove) 
+    {
+        printf("%d\t%s\t%d\t%d\t%d\t%d\t\n", pMove->data.Id, pMove->data.name, pMove->data.score,pMove->data.age,pMove->data.height,pMove->data.weight);
+        pMove = pMove->next;
+    }
+}
+int main(void)
+{
+    struct Node *list = CreateList();
+    struct Student st1;
+    while (1) 
+    {
+        printf("请输入学生的姓名，学号，成绩，年龄，身高，体重。\n");
+        scanf("%s%d%d%d%d%d",&st1.name, &st1.Id, &st1.score,&st1.age,&st1.height,&st1.weight);
+        fflush(stdin);
+        insertNodeByHead(list, st1);
+        printf("countinue?(Y/N)?\n");
+        int sign = getchar();
+        if (sign == 'n' || sign == 'N')
+        {
+            break;
+        }
+    }
+    printf("是否删除学生信息?(Y/N)\n");
+    fflush(stdin);
+    int sign = getchar();
+    if (sign == 'n' || sign == 'N')
+    {
+        ;
+    }
+    else
+    {
+        printf("请输入要删除的学生编号:\n");
+        while (1)
+        {
+            int Id;
+            scanf("%d", &Id);
+            DeleteNodeByData(list, Id);
+            printf("countinue?(Y/N)");
+            fflush(stdin);
+            int chioce = getchar();
+            if (chioce == 'n' || chioce == 'N')
+            {
+                break;
+            }
+        }
+    }
+    printf("-------------------\n");
+    printList(list);
+    printf("-------------------\n");
+    system("pause");
+    return 0;
+}
